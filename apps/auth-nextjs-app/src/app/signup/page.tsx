@@ -1,23 +1,49 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from 'axios'
 import ShimmerBtn from "@/components/ShimmerBtn";
-import InputUI from "@/components/InputUI";
+import InputUI from "@/components/daisyUi/InputUI";
+import { toast } from 'react-hot-toast'
+import DotLoader from "@/components/icons/DotLoader";
 
-const Page = () => {
+const initUser = {
+  email: '',
+  password: '',
+  username: ''
+}
 
-  const [user, setUser] = useState({
-    email: '',
-    password: '',
-    username: ''
-  })
+const SignUpPage = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(initUser);
+  const [buttonDisabled, setButtonDisabled] = useState(true)
+  const [user, setUser] = useState(initUser)
 
-  const onSignUp = () => {
-
+  const onSignUp = async () => {
+    try {
+      setLoading(true)
+      const res: any = await axios.post('/api/users/signup', user)
+      console.log(res);
+      router.push('/login')
+      toast.success(res.message)
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.message)
+    } finally {
+      setLoading(false)
+    }
   }
+
+  useEffect(() => {
+    if (user.email.length > 0 && user.password.length > 0 && user.username.length > 0) {
+      setButtonDisabled(false)
+    } else {
+      setButtonDisabled(true)
+    }
+  }, [user]);
 
   return (
     <div className='flex flex-col gap-2 items-center justify-center min-h-screen py-2'>
@@ -25,15 +51,33 @@ const Page = () => {
         SignUp Page
       </h1>
       <label htmlFor="username" className="">Username</label>
-      <input className="py-2 px-4 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600" type="text" name="username" id="username" value={user.username} placeholder="username" onChange={(e) => { setUser({ ...user, username: e.target.value }) }} />
+
+      <InputUI type="username" id="username" position="left" onChange={(e) => { setUser({ ...user, username: e.target.value }) }} />
 
       <label htmlFor="email" className="">Email</label>
-      <input className="py-2 px-4 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600" type="email" name="email" id="email" value={user.email} placeholder="email" onChange={(e) => { setUser({ ...user, email: e.target.value }) }} />
+
+      <InputUI type="email" id="email" position="left" onChange={(e) => { setUser({ ...user, email: e.target.value }) }} />
 
       <label htmlFor="password" className="">Password</label>
-      <input className="py-2 px-4 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600" type="password" name="password" id="password" value={user.password} placeholder="password" onChange={(e) => { setUser({ ...user, password: e.target.value }) }} />
 
-      <ShimmerBtn onClick={(e) => onSignUp()}>LogIn</ShimmerBtn>
+
+      <InputUI type="password" id="password" position="left" onChange={(e) => { setUser({ ...user, password: e.target.value }) }} />
+
+      <div className="relative mt-4">
+        {loading && <DotLoader />}
+        <ShimmerBtn disabled={buttonDisabled} onClick={(e) => onSignUp()}>{buttonDisabled ? 'No SignUp' : 'SignUp'}</ShimmerBtn>
+      </div>
+
+      {errors &&
+        <ul>
+          {Object.entries(errors).map(([key, value]) => value && (
+            <li key={key}>
+              <div>{key}</div>
+              <div>{value}</div>
+            </li>
+          ))}
+        </ul>
+      }
 
       <div className="pt-4">
         <Link href='/login' className="link link-accent link-hover">Visit Login Page</Link>
@@ -42,4 +86,4 @@ const Page = () => {
   );
 }
 
-export default Page;
+export default SignUpPage;
