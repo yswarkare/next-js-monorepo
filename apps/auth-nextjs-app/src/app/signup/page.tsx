@@ -52,16 +52,16 @@ const SignUpPage = () => {
       </h1>
       <label htmlFor="username" className="">Username</label>
 
-      <InputUI type="username" id="username" position="left" onChange={(e) => { setUser({ ...user, username: e.target.value }) }} />
+      <InputUI type="username" id="username" position="right" onChange={(e) => { setUser({ ...user, username: e.target.value }) }} />
 
       <label htmlFor="email" className="">Email</label>
 
-      <InputUI type="email" id="email" position="left" onChange={(e) => { setUser({ ...user, email: e.target.value }) }} />
+      <InputUI type="email" id="email" position="right" onChange={(e) => { setUser({ ...user, email: e.target.value }) }} />
 
       <label htmlFor="password" className="">Password</label>
 
 
-      <InputUI type="password" id="password" position="left" onChange={(e) => { setUser({ ...user, password: e.target.value }) }} />
+      <InputUI type="password" id="password" position="right" onChange={(e) => { setUser({ ...user, password: e.target.value }) }} />
 
       <div className="relative mt-4">
         {loading && <DotLoader />}

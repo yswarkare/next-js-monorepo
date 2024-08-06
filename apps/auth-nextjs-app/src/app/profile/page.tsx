@@ -6,14 +6,17 @@ import { useRouter } from 'next/navigation'
 import toast from "react-hot-toast";
 import { toastOptions } from "@/data/toast-options";
 import Link from "next/link";
+import DotLoader from "@/components/icons/DotLoader";
 
 
 const ProfilePage = () => {
   const router = useRouter()
-  const [data, setData] = useState('')
+  const [data, setData] = useState('');
+  const [loader, setLoader] = useState(false);
 
   const logOutUser = async () => {
     try {
+      setLoader(true)
       const res = await axios.get('/api/users/logout')
       console.log(res)
       toast.success('Logged out successfully!', toastOptions)
@@ -21,6 +24,8 @@ const ProfilePage = () => {
     } catch (error: any) {
       console.log(error);
       toast.error(error.message, toastOptions)
+    } finally {
+      setLoader(false)
     }
   }
 
@@ -43,7 +48,10 @@ const ProfilePage = () => {
       <hr />
       <button className="btn btn-info" title="get-user-data" type="button" onClick={() => getUserDetails()}>Get User Details</button>
       <hr />
-      <button className="btn btn-primary" title="log-out" type="button" onClick={() => logOutUser()}>Log Out</button>
+      <div className="relative">
+        {loader && <DotLoader />}
+        <button className="btn btn-primary" title="log-out" type="button" onClick={() => logOutUser()}>Log Out</button>
+      </div>
     </div>
   );
 }
