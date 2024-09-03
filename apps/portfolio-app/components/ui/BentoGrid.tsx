@@ -1,12 +1,12 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { cn } from '@/utils/cn';
 import { BackgroundGradientAnimation } from './GradientBG';
 import { GlobeDemo } from './GridGlobe';
-import Lottie from 'react-lottie';
-import animationData from '@/data/confetti.json';
 import MagicButton from './MagicButton';
 import { IoCopyOutline } from 'react-icons/io5';
+import Toast from '../daisyUi/toast';
+
 
 export const BentoGrid = ({ className, children }: { className?: string; children?: React.ReactNode }) => {
   return (
@@ -40,10 +40,16 @@ export const BentoGridItem = ({
   titleClassName?: string;
 }) => {
   const [copied, setCopied] = useState(false);
+  const copiedTimer = useRef<any>(null);
 
   const handleCopy = () => {
     navigator.clipboard.writeText('yswarkare@gmail.com');
     setCopied(true);
+    clearInterval(copiedTimer.current)
+    copiedTimer.current = setTimeout(() => {
+      setCopied(false);
+      clearInterval(copiedTimer.current);
+    }, 3000)
   };
 
   return (
@@ -67,7 +73,7 @@ export const BentoGridItem = ({
       </div>
       {id === 6 && (
         <BackgroundGradientAnimation containerClassName='w-fill h-fill'>
-          <div className='absolute z-50 flex items-center justify-center text-white font-bold' />
+          {/* <div className='absolute z-50 flex items-center justify-center text-white font-bold' /> */}
         </BackgroundGradientAnimation>
       )}
 
@@ -110,19 +116,8 @@ export const BentoGridItem = ({
         )}
 
         {id === 6 && (
-          <div className='mt-5 relative'>
-            <div className='absolute -bottom-5 right-0'>
-              <Lottie
-                options={{
-                  loop: copied,
-                  autoplay: copied,
-                  animationData,
-                  rendererSettings: {
-                    preserveAspectRatio: 'xMidYMid slice',
-                  },
-                }}
-              />
-            </div>
+          <div className={`mt-5 relative animatecss ${copied ? 'animatecss-heartBeat' : "animatecss-flipInX"}`}>
+            <Toast message='Email copied' show={copied} />
             <MagicButton
               title={copied ? 'Email copied' : 'Copy my email'}
               icon={<IoCopyOutline />}
@@ -133,6 +128,6 @@ export const BentoGridItem = ({
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 };

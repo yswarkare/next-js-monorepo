@@ -19,7 +19,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={gabriela.className}>
+      <body className={`pb-8 ${gabriela.className}`}>
+        <div id="toast-parent" className="relative"></div>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

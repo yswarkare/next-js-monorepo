@@ -160,6 +160,8 @@ const config = {
 		},
 	},
 	plugins: [
+		require('daisyui'),
+		require('tailwind-animatecss'),
 		require('tailwindcss-animate'),
 		addVariablesForColors,
 		function ({ matchUtilities, theme }: any) {
